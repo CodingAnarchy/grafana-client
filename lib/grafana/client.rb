@@ -2,10 +2,17 @@
 
 require 'faraday'
 
-require_relative 'ruby/version'
+require_relative 'client/version'
+require_relative 'modules/dashboard'
 
 module Grafana
   class Client
+    # Include all modules into main Client class
+    client_modules = Grafana::Modules.constants.select { |c| Grafana::Modules.const_get(c).is_a?(Module) }
+    client_modules.each do |module_const|
+      include Grafana::Modules.const_get(module_const)
+    end
+
     def initialize(grafana_url:, api_key:)
       retry_options = {
         max: 2,
