@@ -90,7 +90,7 @@ module Grafana
 end
 
 module Grafana
-  class Dashboards < Client
+  class Dashboards < BaseClient
     include Grafana::Modules::Dashboard
   end
 end

@@ -35,7 +35,7 @@ module Grafana
 end
 
 module Grafana
-  class Folders< Client
+  class Folders < BaseClient
     include Grafana::Modules::Folder
   end
 end
