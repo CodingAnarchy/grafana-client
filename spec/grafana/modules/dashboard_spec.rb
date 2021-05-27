@@ -1,45 +1,43 @@
 require 'spec_helper'
 
 RSpec.describe Grafana::Modules::Dashboard do
-  class TestDashboardClient < Grafana::BaseClient
-    include Grafana::Modules::Dashboard
-  end
-
-  subject(:test_client) { TestDashboardClient.new }
+  let(:test_class) { Class.new(Grafana::BaseClient) { include Grafana::Modules::Dashboard } }
   let(:example_dashboard) do
     {
       "dashboard": {
-        "editable":false,
-        "hideControls":true,
-        "nav":[
+        "editable": false,
+        "hideControls": true,
+        "nav": [
           {
-            "enable":false,
-            "type":"timepicker"
+            "enable": false,
+            "type": "timepicker"
           }
         ],
-        "style":"dark",
-        "tags":[],
-        "templating":{
-          "list":[
+        "style": "dark",
+        "tags": [],
+        "templating": {
+          "list": [
           ]
         },
-        "time":{
+        "time": {
         },
-        "timezone":"browser",
-        "title":"Home",
-        "version":5
+        "timezone": "browser",
+        "title": "Home",
+        "version": 5
       },
       "meta":	{
-        "isHome":true,
-        "canSave":false,
-        "canEdit":false,
-        "canStar":false,
-        "url":"",
-        "expires":"0001-01-01T00:00:00Z",
-        "created":"0001-01-01T00:00:00Z"
+        "isHome": true,
+        "canSave": false,
+        "canEdit": false,
+        "canStar": false,
+        "url": "",
+        "expires": "0001-01-01T00:00:00Z",
+        "created": "0001-01-01T00:00:00Z"
       }
     }
   end
+  
+  subject(:test_client) { test_class.new }
 
   describe "#home_dashboard" do
     it "calls the home dashboard api" do
@@ -50,6 +48,79 @@ RSpec.describe Grafana::Modules::Dashboard do
 
       expect(stub).to have_been_requested
       expect(dashboard).to eq(example_dashboard.deep_stringify_keys)
+    end
+  end
+
+  describe "#create_dashboard" do
+    it "submits the request to create a dashboard" do
+      request_options = { 
+        message: "Testing create dashboard",
+        folder_id: 1
+      }
+
+      request_body = {
+        dashboard: example_dashboard,
+        message: request_options[:message],
+        folderId: request_options[:folder_id],
+        overwrite: false
+      }
+
+      response_body = {
+        "id":      1,
+        "uid":     "cIBgcSjkk",
+        "url":     "/d/cIBgcSjkk/production-overview",
+        "status":  "success",
+        "version": 1,
+        "slug":    "production-overview"
+      }
+
+      stub = stub_request(:post, "https://test.grafana.io/api/dashboards/db")
+        .with(body: request_body.to_json)
+        .and_return(status: 200, body: response_body.to_json)
+
+      response = subject.create_dashboard(dashboard: example_dashboard, **request_options)
+
+      expect(stub).to have_been_requested
+      expect(response).to eq(response_body.deep_stringify_keys)
+    end
+  end
+  
+  describe "#update_dashboard" do
+    it "submits the request to create a dashboard" do
+      request_options = { 
+        title: "Updated dashboard via API",
+        message: "Testing update dashboard",
+        folder_id: 1
+      }
+
+      request_body = {
+        dashboard: example_dashboard.merge({ title: "Updated dashboard via API" }),
+        message: request_options[:message],
+        folderId: request_options[:folder_id],
+        overwrite: true
+      }
+
+      response_body = {
+        "id":      1,
+        "uid":     "testuid",
+        "url":     "/d/testuid/production-overview",
+        "status":  "success",
+        "version": 1,
+        "slug":    "production-overview"
+      }
+
+      get_stub = stub_request(:get, "https://test.grafana.io/api/dashboards/uid/testuid")
+        .and_return(body: example_dashboard.to_json)
+
+      update_stub = stub_request(:post, "https://test.grafana.io/api/dashboards/db")
+        .with(body: request_body.to_json)
+        .and_return(status: 200, body: response_body.to_json)
+
+      response = subject.update_dashboard(uid: 'testuid', **request_options)
+
+      expect(get_stub).to have_been_requested
+      expect(update_stub).to have_been_requested
+      expect(response).to eq(response_body.deep_stringify_keys)
     end
   end
 
@@ -85,6 +156,29 @@ RSpec.describe Grafana::Modules::Dashboard do
       subject.delete_dashboard(uid: 'testuid')
 
       expect(stub).to have_been_requested
+    end
+  end
+
+  describe "#dashboard_tags" do
+    it "requests the available dashboard tags" do
+      tags_response = [
+        {
+          "term" => "tag1",
+          "count" => 1
+        },
+        {
+          "term" => "tag2",
+          "count" => 4
+        }
+      ]
+
+      stub = stub_request(:get, "https://test.grafana.io/api/dashboards/tags")
+        .and_return(body: tags_response.to_json)
+
+      response = subject.dashboard_tags
+
+      expect(stub).to have_been_requested
+      expect(response).to eq(tags_response)
     end
   end
 end
