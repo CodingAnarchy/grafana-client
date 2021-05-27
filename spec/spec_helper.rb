@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require 'webmock/rspec'
-require "grafana/client"
+require 'active_support/core_ext/hash'
+require 'grafana/client'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

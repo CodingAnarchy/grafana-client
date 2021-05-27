@@ -4,7 +4,7 @@ module Grafana
   module Modules
     module Dashboard
       def home_dashboard
-        @conn.get('/api/dashboards/home')
+        get('/api/dashboards/home')
       end
 
       def create_dashboard(dashboard:, **options)
@@ -18,7 +18,7 @@ module Grafana
           overwrite: false # Creating new dashboard should not overwrite existing dashboards
         }
 
-        @conn.post('/api/dashboards/db', req_body)
+        post('/api/dashboards/db', req_body)
       end
 
       def update_dashboard(uid:, **options)
@@ -34,40 +34,40 @@ module Grafana
           overwrite: true # Updating dashboard should overwrite existing dashboards
         }
 
-        @conn.post('/api/dashboards/db', req_body)
+        post('/api/dashboards/db', req_body)
       end
 
       def dashboard(uid:)
-        @conn.get("/api/dashboards/uid/#{uid}")
+        get("/api/dashboards/uid/#{uid}")
       end
 
       def delete_dashboard(uid:)
-        @conn.delete("/api/dashboards/uid/#{uid}")
+        delete("/api/dashboards/uid/#{uid}")
       end
 
       def dashboard_tags
-        @conn.get('/api/dashboards/tags')
+        get('/api/dashboards/tags')
       end
 
       def dashboard_permissions(dashboard_id:)
-        @conn.get("/api/dashboards/id/#{dashboard_id}/permissions")
+        get("/api/dashboards/id/#{dashboard_id}/permissions")
       end
 
       def update_dashboard_permissions(dashboard_id:, permissions:)
         # TODO: error if permissions is not array of hashes
-        @conn.post("/api/dashboards/id/#{dashboard_id}/permissions", { items: permissions })
+        post("/api/dashboards/id/#{dashboard_id}/permissions", { items: permissions })
       end
 
       def dashboard_versions(dashboard_id:)
-        @conn.get("/api/dashboards/id/#{dashboard_id}/versions")
+        get("/api/dashboards/id/#{dashboard_id}/versions")
       end
 
       def dashboard_version(dashboard_id:, version_id:)
-        @conn.get("/api/dashboards/id/#{dashboard_id}/versions/#{version_id}")
+        get("/api/dashboards/id/#{dashboard_id}/versions/#{version_id}")
       end
 
       def restore_dashboard_version(dashboard_id:, version_id:)
-        @conn.post("/api/dashboards/id/#{dashboard_id}/restore", { version: version_id })
+        post("/api/dashboards/id/#{dashboard_id}/restore", { version: version_id })
       end
 
       def diff_dashboards(base_id:, base_version:, new_version:, new_id: nil, diff_type: 'json')
@@ -83,7 +83,7 @@ module Grafana
           diffType: diff_type
         }
 
-        @conn.post('/api/dashboards/calculate-diff', req_body)
+        post('/api/dashboards/calculate-diff', req_body)
       end
     end
   end
