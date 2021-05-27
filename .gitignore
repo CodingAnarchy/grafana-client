@@ -16,6 +16,9 @@
 # Ignore Byebug command history file.
 .byebug_history
 
+# Ignore RSpec history file
+.rspec_status
+
 ## Specific to RubyMotion:
 .dat*
 .repl_history
@@ -53,4 +56,4 @@ build-iPhoneSimulator/
 .rvmrc
 
 # Used by RuboCop. Remote config files pulled in from inherit_from directive.
-# .rubocop-https?--*
+.rubocop-https?--*

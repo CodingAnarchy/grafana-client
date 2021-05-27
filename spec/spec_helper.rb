@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require "grafana/ruby"
+require 'webmock/rspec'
+require "grafana/client"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -12,4 +13,10 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+end
+
+# Configure dummy values for client to be used in test expectations
+Grafana::Client.config do |c|
+  c.api_key = "dummy"
+  c.grafana_url = "https://test.grafana.io"
 end
