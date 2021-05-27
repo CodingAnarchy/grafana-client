@@ -2,11 +2,11 @@ module Grafana
   module Modules
     module Folder
       def folders
-        @conn.get('/api/folders')
+        get('/api/folders')
       end
 
       def folder(uid:)
-        @conn.get("/api/folders/#{uid}")
+        get("/api/folders/#{uid}")
       end
 
       def create_folder(title:, uid: nil)
@@ -16,7 +16,7 @@ module Grafana
 
         req_body.merge(uid: uid) if uid.present?
 
-        @conn.post('/api/folders', req_body)
+        post('/api/folders', req_body)
       end
 
       def update_folder(uid:, **options)
@@ -24,11 +24,11 @@ module Grafana
         options = options.slice(:title, :new_uid, :version, :overwrite)
         options[:uid] = options.delete(:new_uid) if options.key(:new_uid)
 
-        @conn.post("/api/folders/#{uid}", options)
+        post("/api/folders/#{uid}", options)
       end
 
       def delete_folder(uid:)
-        @conn.delete("/api/folders#{uid}")
+        delete("/api/folders#{uid}")
       end
     end
   end
