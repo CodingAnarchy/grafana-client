@@ -9,6 +9,7 @@ module Grafana
 
         valid_alert_states = ['ALL', 'no_data', 'paused', 'alerting', 'ok', 'pending']
 
+        options[:panelId] = options.delete(:panel_id) if options[:panel_id].present?
         options[:folderId] = Array.wrap(options.delete(:folder_id)) if options[:folder_id].present?
         options[:dashboardId] = Array.wrap(options.delete(:dashboard_id)) if options[:dashboard_id].present?
         options[:dasboardQuery] = options.delete(:dahsboard_query) if options[:dashboard_query].present?
@@ -18,19 +19,25 @@ module Grafana
         options.delete(:limit) unless options[:limit].is_a?(Integer)
 
         alert_url = '/api/alerts'
-        alert_url += URI.encode_www_form(options) if options.any?
-        @conn.get(alert_url)
+        alert_url += "?#{URI.encode_www_form(options)}" if options.any?
+        get(alert_url)
       end
 
       def alert(id:)
-        @conn.get("/api/alerts/#{id}")
+        get("/api/alerts/#{id}")
       end
 
       # CRUD actions are done in alerts via modifying the associated dashboard
       # TODO: create CRUD actions in client that will do the appropriate lookups and changes more directly
 
       def pause_alert(id:, paused: true)
-        @conn.post("/api/alerts/#{id}/pause", { paused: paused })
+        post("/api/alerts/#{id}/pause", { paused: paused })
+      end
+
+      # Helper method to unpause an alert as
+      # passing paused: false is not as intuitive
+      def unpause_alert(id:)
+        pause_alert(id: id, paused: false)
       end
     end
   end
