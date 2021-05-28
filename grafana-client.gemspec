@@ -34,4 +34,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'activesupport', '>= 5.2', '< 6.2'
   spec.add_development_dependency 'rspec', '~> 3.10'
   spec.add_development_dependency 'webmock', '~> 3.13'
+
+  unless RUBY_PLATFORM == 'java'
+    spec.add_development_dependency 'pry-byebug', '~> 3.9'
+  end
 end
