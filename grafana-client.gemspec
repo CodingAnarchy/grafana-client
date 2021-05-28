@@ -4,7 +4,7 @@ require_relative "lib/grafana/client/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "grafana-client"
-  spec.version       = Grafana::Client::VERSION
+  spec.version       = Grafana::CLIENT_VERSION
   spec.authors       = ["Matt Tanous"]
   spec.email         = ["mtanous22@gmail.com"]
 

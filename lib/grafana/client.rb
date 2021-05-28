@@ -5,6 +5,8 @@ Dir[File.join(__dir__, 'modules', '*.rb')].sort.each { |file| require file }
 
 module Grafana
   class Client < Grafana::BaseClient
+    VERSION = Grafana::CLIENT_VERSION
+    
     class << self
       attr_accessor :api_key, :grafana_url
 
