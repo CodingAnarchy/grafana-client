@@ -37,7 +37,7 @@ module Grafana
         post('/api/dashboards/db', req_body)
       end
 
-      def overwrite_dashboard(uid:, dashboard:, **options)
+      def overwrite_dashboard(dashboard:, **options)
         req_body = {
           dashboard: dashboard,
           message: options[:message],
