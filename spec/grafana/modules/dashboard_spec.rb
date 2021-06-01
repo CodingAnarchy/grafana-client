@@ -123,6 +123,40 @@ RSpec.describe Grafana::Modules::Dashboard do
       expect(response).to eq(response_body.deep_stringify_keys)
     end
   end
+  
+  describe "#overwrite_dashboard" do
+    it "submits the request to create a dashboard" do
+      request_options = { 
+        message: "Testing create dashboard",
+        folder_id: 1
+      }
+
+      request_body = {
+        dashboard: example_dashboard,
+        message: request_options[:message],
+        folderId: request_options[:folder_id],
+        overwrite: true
+      }
+
+      response_body = {
+        "id":      1,
+        "uid":     "cIBgcSjkk",
+        "url":     "/d/cIBgcSjkk/production-overview",
+        "status":  "success",
+        "version": 1,
+        "slug":    "production-overview"
+      }
+
+      stub = stub_request(:post, "https://test.grafana.io/api/dashboards/db")
+        .with(body: request_body.to_json)
+        .and_return(status: 200, body: response_body.to_json)
+
+      response = subject.overwrite_dashboard(dashboard: example_dashboard, **request_options)
+
+      expect(stub).to have_been_requested
+      expect(response).to eq(response_body.deep_stringify_keys)
+    end
+  end
 
   describe "#dashboard" do
     it "requires the uid parameter" do
