@@ -11,7 +11,7 @@ jobs:
         ruby: [2.5, 2.6, 2.7, '3.0', head, jruby, jruby-head, truffleruby, truffleruby-head]
     runs-on: ${{ matrix.os }}
     # Don't duplicate test runs for both push and PR for internal PRs
-    if: ${{ github.event_name == ‘push’ || github.event.pull_request.head.repo.full_name != github.repository }}
+    if: ${{ github.event_name == "push" || github.event.pull_request.head.repo.full_name != github.repository }}
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
