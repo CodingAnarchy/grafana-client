@@ -42,7 +42,7 @@ RSpec.describe Grafana::Modules::Dashboard do
   describe "#home_dashboard" do
     it "calls the home dashboard api" do
       stub = stub_request(:get, "https://test.grafana.io/api/dashboards/home")
-        .to_return(body: example_dashboard.to_json)
+        .to_return(body: example_dashboard.to_json, headers: {content_type: 'application/json'})
 
       dashboard = subject.home_dashboard
 
@@ -76,7 +76,7 @@ RSpec.describe Grafana::Modules::Dashboard do
 
       stub = stub_request(:post, "https://test.grafana.io/api/dashboards/db")
         .with(body: request_body.to_json)
-        .and_return(status: 200, body: response_body.to_json)
+        .and_return(status: 200, body: response_body.to_json, headers: {content_type: 'application/json'})
 
       response = subject.create_dashboard(dashboard: example_dashboard, **request_options)
 
@@ -110,11 +110,11 @@ RSpec.describe Grafana::Modules::Dashboard do
       }
 
       get_stub = stub_request(:get, "https://test.grafana.io/api/dashboards/uid/testuid")
-        .and_return(body: example_dashboard.to_json)
+        .and_return(body: example_dashboard.to_json, headers: {content_type: 'application/json'})
 
       update_stub = stub_request(:post, "https://test.grafana.io/api/dashboards/db")
         .with(body: request_body.to_json)
-        .and_return(status: 200, body: response_body.to_json)
+        .and_return(status: 200, body: response_body.to_json, headers: {content_type: 'application/json'})
 
       response = subject.update_dashboard(uid: 'testuid', **request_options)
 
@@ -149,7 +149,7 @@ RSpec.describe Grafana::Modules::Dashboard do
 
       stub = stub_request(:post, "https://test.grafana.io/api/dashboards/db")
         .with(body: request_body.to_json)
-        .and_return(status: 200, body: response_body.to_json)
+        .and_return(status: 200, body: response_body.to_json, headers: {content_type: 'application/json'})
 
       response = subject.overwrite_dashboard(dashboard: example_dashboard, **request_options)
 
@@ -167,7 +167,7 @@ RSpec.describe Grafana::Modules::Dashboard do
 
     it "returns a dashboard from the specified uid" do
       stub = stub_request(:get, "https://test.grafana.io/api/dashboards/uid/testuid")
-        .and_return(body: example_dashboard.to_json)
+        .and_return(body: example_dashboard.to_json, headers: {content_type: 'application/json'})
 
       dashboard = subject.dashboard(uid: 'testuid')
 
@@ -185,7 +185,8 @@ RSpec.describe Grafana::Modules::Dashboard do
 
     it "submits API request to delete w/ sepcified UID" do
       stub = stub_request(:delete, "https://test.grafana.io/api/dashboards/uid/testuid")
-        .and_return(body: { "title": "Production Overview", "message": "Dashboard Production Overview deleted", "id": 2 }.to_json)
+        .and_return(body: { "title": "Production Overview", "message": "Dashboard Production Overview deleted", "id": 2 }.to_json,
+                    headers: {content_type: 'application/json'})
 
       subject.delete_dashboard(uid: 'testuid')
 
@@ -207,7 +208,7 @@ RSpec.describe Grafana::Modules::Dashboard do
       ]
 
       stub = stub_request(:get, "https://test.grafana.io/api/dashboards/tags")
-        .and_return(body: tags_response.to_json)
+        .and_return(body: tags_response.to_json, headers: {content_type: 'application/json'})
 
       response = subject.dashboard_tags
 

@@ -53,7 +53,7 @@ RSpec.describe Grafana::Modules::Alert do
   describe "#alerts" do
     it "requests all alerts if no query params" do
       stub = stub_request(:get, "https://test.grafana.io/api/alerts?state=ALL")
-        .and_return(body: alerts_list.to_json)
+        .and_return(body: alerts_list.to_json, headers: { content_type: 'application/json' })
 
       response = test_client.alerts
 
@@ -63,7 +63,7 @@ RSpec.describe Grafana::Modules::Alert do
 
     it "requests with panel id" do
       stub = stub_request(:get, "https://test.grafana.io/api/alerts?panelId=1&state=ALL")
-        .and_return(body: alerts_list.to_json)
+        .and_return(body: alerts_list.to_json, headers: { content_type: 'application/json' })
 
       test_client.alerts(panel_id: 1)
 
@@ -73,7 +73,7 @@ RSpec.describe Grafana::Modules::Alert do
     context "with folder ids" do
       it "requests singular" do
         stub = stub_request(:get, "https://test.grafana.io/api/alerts?folderId=1&state=ALL")
-          .and_return(body: alerts_list.to_json)
+          .and_return(body: alerts_list.to_json, headers: { content_type: 'application/json' })
 
         test_client.alerts(folder_id: 1)
 
@@ -82,7 +82,7 @@ RSpec.describe Grafana::Modules::Alert do
 
       it "requests multiple" do
         stub = stub_request(:get, "https://test.grafana.io/api/alerts?folderId=0&folderId=1&state=ALL")
-          .and_return(body: alerts_list.to_json)
+          .and_return(body: alerts_list.to_json, headers: { content_type: 'application/json' })
 
         test_client.alerts(folder_id: [0, 1])
 
@@ -93,7 +93,7 @@ RSpec.describe Grafana::Modules::Alert do
     context "with dashboard ids" do
       it "requests singular" do
         stub = stub_request(:get, "https://test.grafana.io/api/alerts?dashboardId=1&state=ALL")
-          .and_return(body: alerts_list.to_json)
+          .and_return(body: alerts_list.to_json, headers: { content_type: 'application/json' })
 
         test_client.alerts(dashboard_id: 1)
 
@@ -102,7 +102,7 @@ RSpec.describe Grafana::Modules::Alert do
 
       it "requests multiple" do
         stub = stub_request(:get, "https://test.grafana.io/api/alerts?dashboardId=0&dashboardId=1&state=ALL")
-          .and_return(body: alerts_list.to_json)
+          .and_return(body: alerts_list.to_json, headers: { content_type: 'application/json' })
 
         test_client.alerts(dashboard_id: [0, 1])
 
@@ -120,7 +120,7 @@ RSpec.describe Grafana::Modules::Alert do
 
     it "returns a dashboard from the specified uid" do
       stub = stub_request(:get, "https://test.grafana.io/api/alerts/1")
-        .and_return(body: example_alert.to_json)
+        .and_return(body: example_alert.to_json, headers: { content_type: 'application/json' })
 
       alert = subject.alert(id: 1)
 
@@ -139,7 +139,8 @@ RSpec.describe Grafana::Modules::Alert do
     it "requests a pause for the alert" do
       stub = stub_request(:post, "https://test.grafana.io/api/alerts/1/pause")
         .with(body: { paused: true }.to_json)
-        .and_return(body: { "alertId": 1, "state": "Paused", "message": "alert paused" }.to_json)
+        .and_return(body: { "alertId": 1, "state": "Paused", "message": "alert paused" }.to_json, 
+                    headers: { content_type: 'application/json' })
 
       pause = subject.pause_alert(id: 1)
 
@@ -149,7 +150,8 @@ RSpec.describe Grafana::Modules::Alert do
     it "requests an un pause for the alert if paused = false" do
       stub = stub_request(:post, "https://test.grafana.io/api/alerts/1/pause")
         .with(body: { paused: false }.to_json)
-        .and_return(body: { "alertId": 1, "state": "Paused", "message": "alert paused" }.to_json)
+        .and_return(body: { "alertId": 1, "state": "Paused", "message": "alert paused" }.to_json,
+                    headers: { content_type: 'application/json' })
 
       pause = subject.pause_alert(id: 1, paused: false)
 
@@ -167,7 +169,8 @@ RSpec.describe Grafana::Modules::Alert do
     it "requests an unpause for the alert" do
       stub = stub_request(:post, "https://test.grafana.io/api/alerts/1/pause")
         .with(body: { paused: false }.to_json)
-        .and_return(body: { "alertId": 1, "state": "Paused", "message": "alert paused" }.to_json)
+        .and_return(body: { "alertId": 1, "state": "Paused", "message": "alert paused" }.to_json,
+                    headers: { content_type: 'application/json' })
 
       pause = subject.pause_alert(id: 1, paused: false)
 
