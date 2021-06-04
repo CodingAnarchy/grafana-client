@@ -24,20 +24,20 @@ module Grafana
 
     def get(url, **options)
       # TODO: error handling
-      JSON.parse(@conn.get(url, **options).body)
+      @conn.get(url, **options).body
     end
 
     def post(url, body, **options)
       response = @conn.post(url, body, **options)
 
       # TODO: handle errors in the response
-      JSON.parse(response.body)
+      response.body
     end
 
     def delete(url, **options)
       response = @conn.delete(url, **options)
 
-      JSON.parse(response.body)
+      response.body
     end
   end
 end
